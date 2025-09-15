@@ -3,13 +3,16 @@ Utilities for loading and handling configuration files.
 """
 
 import os
-import logging
 from pathlib import Path
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict, YamlConfigSettingsSource
+from utils.logging_utils import setup_logger
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(filename="logs/config.log", level=logging.INFO)
+logger = setup_logger(
+    log_file=__file__,
+    log_to_console=False,
+    file_mode="a",
+)
 
 
 class Settings(BaseSettings):
@@ -25,6 +28,12 @@ class Settings(BaseSettings):
     # .yaml
     APP_NAME: str = Field(...)
     APP_VERSION: str = Field(...)
+
+    PATH_LOGS: str = Field(...)
+    PATH_DATA_ROOT: str = Field(...)
+    PATH_ASSETS_ROOT: str = Field(...)
+    PATH_MODELS_ROOT: str = Field(...)
+    PATH_OUTPUT_ROOT: str = Field(...)
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
