@@ -3,24 +3,26 @@
 import os
 import sys
 import logging
-from typing import Literal
+from typing import Literal, Optional
 
 
 def setup_logger(
-    log_file: str,
+    log_file: Optional[str] = None,
     log_dir: str = "logs",
     log_to_console: bool = True,
     file_mode: Literal["a", "w"] = "a",
 ) -> logging.Logger:
-    """Set up a logger with file and optional console handlers.
+    """Set up a logger with an optional per-file handler and an always-on all_logs handler.
+
+    If log_file is None or empty, only the logs/all_logs.log handler will be used.
 
     Args:
-        log_file (str): The path to the log file where messages will be saved.
+        log_file (Optional[str]): The name or path for the per-file log (optional).
         log_dir (str, optional): Directory where log files will be created. Defaults to "logs".
-        log_to_console (bool, optional): Whether to also log messages to the
-            console (stdout). Defaults to True.
-        file_mode (str, optional): File open mode for the log file: "a" to append
-            (default) or "w" to overwrite.
+        log_to_console (bool, optional): Whether to also log messages to the console (stdout).
+            Defaults to True.
+        file_mode (str, optional): File open mode for the per-file log:
+            "a" to append (default) or "w" to overwrite.
 
     Returns:
         logging.Logger: Configured logger instance.
@@ -28,14 +30,14 @@ def setup_logger(
     if file_mode not in {"a", "w"}:
         raise ValueError("file_mode must be 'a' (append) or 'w' (write).")
 
-    log_file = os.path.join(
-        log_dir, f"{os.path.splitext(os.path.basename(log_file))[0]}.log"
-    )
-    log_dir = os.path.dirname(log_file)
-    if log_dir:
-        os.makedirs(log_dir, exist_ok=True)
+    # Ensure log directory exists
+    os.makedirs(log_dir, exist_ok=True)
 
-    logger = logging.getLogger(log_file)
+    # Name logger so separate setups don't conflict; prefer the per-file name when present
+    logger_name = (
+        os.path.splitext(os.path.basename(log_file))[0] if log_file else "all_logs"
+    )
+    logger = logging.getLogger(logger_name)
     logger.setLevel(logging.DEBUG)
     logger.handlers.clear()
 
@@ -44,15 +46,21 @@ def setup_logger(
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    file_handler = logging.FileHandler(log_file, mode=file_mode)
-    file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(formatter)
+    # Per-file handler (optional)
+    if log_file:
+        per_file_path = os.path.join(
+            log_dir, f"{os.path.splitext(os.path.basename(log_file))[0]}.log"
+        )
+        file_handler = logging.FileHandler(per_file_path, mode=file_mode)
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
 
-    file_handler_all_logs = logging.FileHandler("logs/all_logs.log", mode="a")
+    # Always-on aggregate log
+    all_logs_path = os.path.join(log_dir, "all_logs.log")
+    file_handler_all_logs = logging.FileHandler(all_logs_path, mode="a")
     file_handler_all_logs.setLevel(logging.DEBUG)
     file_handler_all_logs.setFormatter(formatter)
-
-    logger.addHandler(file_handler)
     logger.addHandler(file_handler_all_logs)
 
     if log_to_console:
@@ -69,12 +77,17 @@ def main():
 
     print(f"Welcome from `{os.path.basename(__file__).split('.')[0]}` Module.")
 
-    logger = setup_logger("logs/logging_utils.log", log_to_console=False, file_mode="a")
+    # Example: per-file log
+    logger1 = setup_logger(
+        log_file=__file__, log_dir="logs", log_to_console=False, file_mode="a"
+    )
+    logger1.debug("Per-file debug message (saved in per-file and all_logs).")
 
-    logger.debug("This is a debug message (saved in file).")
-    logger.info("This is an info message (shown in file & console).")
-    logger.error("This is an error message (shown in file & console).")
-    logger.warning("This is a warning message (shown in file & console).")
+    # Example: only aggregate all_logs
+    logger2 = setup_logger(log_to_console=True, file_mode="a")
+    logger2.info(
+        "Aggregate info message (saved only to all_logs and shown on console)."
+    )
 
 
 if __name__ == "__main__":
