@@ -1,5 +1,5 @@
 # -------------- APP Config --------------
-APP_NAME: "Product-Metadata-Generator-Agent"
+APP_NAME: "project-boilerplate"
 APP_VERSION: "1.0.0"
 
 # -------------- Path Config --------------
