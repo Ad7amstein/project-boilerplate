@@ -1,5 +1,5 @@
 """
-Setup module for the RAG-Product-Recommendation-Chatbot package.
+Setup module for the <project_name> package.
 """
 
 from setuptools import setup, find_packages
