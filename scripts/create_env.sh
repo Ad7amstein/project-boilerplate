@@ -25,4 +25,19 @@ fi
 
 # Activate the environment
 echo "🚀 Activating virtual environment..."
+# shellcheck disable=SC1091
 source .venv/bin/activate
+
+# Upgrade pip to latest version
+echo "⬆️  Upgrading pip..."
+pip install --upgrade pip > /dev/null
+
+# Install dependencies if requirements.txt exists
+if [ -f "requirements.txt" ]; then
+    echo "📦 Installing dependencies from requirements.txt..."
+    pip install -r requirements.txt
+else
+    echo "⚠️  No requirements.txt found. Skipping dependency installation."
+fi
+
+echo "✅ Environment setup complete!"
