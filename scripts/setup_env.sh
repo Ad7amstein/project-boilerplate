@@ -40,4 +40,8 @@ else
     echo "⚠️  No requirements.txt found. Skipping dependency installation."
 fi
 
+# Install the current package in editable mode
+echo "🔧 Installing the current package in editable mode..."
+pip install -e .
+
 echo "✅ Environment setup complete!"
