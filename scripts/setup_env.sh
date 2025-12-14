@@ -46,6 +46,10 @@ fi
 
 # Install the current package in editable mode
 echo "🔧 Installing the current package in editable mode..."
+if [ ! -f "setup.py" ] && [ ! -f "pyproject.toml" ]; then
+    echo "❌ No setup.py or pyproject.toml found. Cannot install package in editable mode."
+    exit 1
+fi
 uv pip install -e .
 
 echo "✅ Environment setup complete!"
