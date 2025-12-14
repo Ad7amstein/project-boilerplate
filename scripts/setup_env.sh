@@ -32,10 +32,14 @@ source .venv/bin/activate
 echo "⬆️  Upgrading pip..."
 pip install --upgrade pip > /dev/null
 
+# Install uv package
+echo "📥 Installing 'uv' package..."
+pip install uv
+
 # Install dependencies if requirements.txt exists
 if [ -f "requirements.txt" ]; then
     echo "📦 Installing dependencies from requirements.txt..."
-    pip install -r requirements.txt
+    uv pip install -r requirements.txt
 else
     echo "⚠️  No requirements.txt found. Skipping dependency installation."
 fi
