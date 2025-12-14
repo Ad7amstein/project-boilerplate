@@ -46,6 +46,6 @@ fi
 
 # Install the current package in editable mode
 echo "🔧 Installing the current package in editable mode..."
-pip install -e .
+uv pip install -e .
 
 echo "✅ Environment setup complete!"
