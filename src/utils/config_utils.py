@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     APP_NAME: str = Field(...)
     APP_VERSION: str = Field(...)
 
-    PATH_LOGS: str = Field(...)
+    PATH_LOGS_ROOT: str = Field(...)
     PATH_DATA_ROOT: str = Field(...)
     PATH_ASSETS_ROOT: str = Field(...)
     PATH_MODELS_ROOT: str = Field(...)
