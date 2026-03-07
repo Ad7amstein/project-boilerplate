@@ -30,7 +30,7 @@ source .venv/bin/activate
 # Install dependencies if requirements.txt exists
 if [ -f "requirements.txt" ]; then
     echo "📦 Installing dependencies from requirements.txt..."
-    uv pip install -r requirements.txt
+    uv add -r requirements.txt
 else
     echo "⚠️  No requirements.txt found. Skipping dependency installation."
 fi

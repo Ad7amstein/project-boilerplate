@@ -31,7 +31,7 @@ bash scripts/setup_env.sh 3.11
 The script will:
 1. Install `uv` if it is not found on the system.
 2. Create a `.venv` virtual environment using `uv venv .venv`.
-3. Install all project dependencies from `requirements.txt` via `uv pip install -r requirements.txt`.
+3. Install all project dependencies from `requirements.txt` via `uv add -r requirements.txt`.
 4. Install the project itself in editable mode via `uv pip install -e .`.
 
 ### Activating the Environment
